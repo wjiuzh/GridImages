@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
         GridImagesLayout gridImagesLayoutSingle = findViewById(R.id.gridimages_layout_single);
         gridImagesLayoutSingle.setColumnCount(3);
         gridImagesLayoutSingle.setDividerWidth(dp2px(this, 4));
-        gridImagesLayoutSingle.setSingleImageSize(dp2px(this, 100));
+        gridImagesLayoutSingle.setSingleImageMaxSize(dp2px(this, 200));
         gridImagesLayoutSingle.setImageLoader(new GridImagesLayout.ImageLoader() {
             @Override
             public void loadImage(String url, ImageView imageView) {
@@ -38,7 +38,7 @@ public class MainActivity extends Activity {
         GridImagesLayout gridImagesLayout = findViewById(R.id.gridimages_layout);
 //        gridImagesLayout.setColumnCount(3);
 //        gridImagesLayout.setDividerWidth(dp2px(this, 4));
-//        gridImagesLayout.setSingleImageSize(dp2px(this, 200));
+//        gridImagesLayout.setSingleImageMaxSize(dp2px(this, 200));
         gridImagesLayout.setImageLoader(new GridImagesLayout.ImageLoader() {
             @Override
             public void loadImage(String url, ImageView imageView) {

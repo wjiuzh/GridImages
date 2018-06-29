@@ -17,10 +17,10 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  * Created by Wang Jiuzhou on 2018/6/23 22:35
  */
 public class GridImagesLayout extends FrameLayout {
-    private SquareImageView singleImageView;
+    private ImageView singleImageView;
     private GridLayout gridImageLayout;
     private ImageLoader imageLoader;
-    private int singleImageSize = 300; //px
+    private int singleImageMaxSize = 300; //px
     private int columnCount = 2;
     private int dividerWidth = 10;  //px
 
@@ -36,18 +36,20 @@ public class GridImagesLayout extends FrameLayout {
         super(context, attrs, defStyleAttr);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.GridImagesLayout);
         columnCount = a.getColor(R.styleable.GridImagesLayout_columnCount, 2);
-        singleImageSize = a.getDimensionPixelSize(R.styleable.GridImagesLayout_singleImageSize, 300);
+        singleImageMaxSize = a.getDimensionPixelSize(R.styleable.GridImagesLayout_singleImageMaxSize, 300);
         dividerWidth = a.getDimensionPixelSize(R.styleable.GridImagesLayout_dividerWidth, 10);
         a.recycle();
         init();
     }
 
     private void init() {
-        singleImageView = new SquareImageView(getContext());
+        singleImageView = new ImageView(getContext());
         singleImageView.setAdjustViewBounds(true);
-        singleImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        singleImageView.setScaleType(ImageView.ScaleType.FIT_XY);
         singleImageView.setVisibility(GONE);
-        LayoutParams layoutParams = new LayoutParams(singleImageSize, WRAP_CONTENT);
+        singleImageView.setMaxWidth(singleImageMaxSize);
+        singleImageView.setMaxHeight((int) (singleImageMaxSize * 1.5));
+        LayoutParams layoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         addView(singleImageView, layoutParams);
 
         gridImageLayout = new GridLayout(getContext());
@@ -66,9 +68,11 @@ public class GridImagesLayout extends FrameLayout {
         gridImageLayout.setColumnCount(columnCount);
     }
 
-    public void setSingleImageSize(int size) {
-        this.singleImageSize = size;
-        LayoutParams layoutParams = new LayoutParams(singleImageSize, WRAP_CONTENT);
+    public void setSingleImageMaxSize(int size) {
+        this.singleImageMaxSize = size;
+        singleImageView.setMaxWidth(singleImageMaxSize);
+        singleImageView.setMaxHeight((int) (singleImageMaxSize * 1.5));
+        LayoutParams layoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         removeView(singleImageView);
         addView(singleImageView, layoutParams);
     }

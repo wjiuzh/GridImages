@@ -3,6 +3,6 @@
     <declare-styleable name="GridImagesLayout">
         <attr name="columnCount" format="integer" />
         <attr name="dividerWidth" format="dimension" />
-        <attr name="singleImageSize" format="dimension" />
+        <attr name="singleImageMaxSize" format="dimension" />
     </declare-styleable>
 </resources>

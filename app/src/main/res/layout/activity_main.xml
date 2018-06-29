@@ -15,7 +15,7 @@
         app:dividerWidth="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:singleImageSize="200dp" />
+        app:singleImageMaxSize="200dp" />
 
     <com.jzfree.gridimages.GridImagesLayout
         android:id="@+id/gridimages_layout"
@@ -26,6 +26,6 @@
         app:dividerWidth="4dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gridimages_layout_single"
-        app:singleImageSize="200dp" />
+        app:singleImageMaxSize="200dp" />
 
 </android.support.constraint.ConstraintLayout>
