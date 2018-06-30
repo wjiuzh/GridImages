@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.jzfree.gridimages.GridImagesLayout;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +23,24 @@ public class MainActivity extends Activity {
         gridImagesLayoutSingle.setColumnCount(3);
         gridImagesLayoutSingle.setDividerWidth(dp2px(this, 4));
         gridImagesLayoutSingle.setSingleImageMaxSize(dp2px(this, 200));
-        gridImagesLayoutSingle.setImageLoader(new GridImagesLayout.ImageLoader() {
+        gridImagesLayoutSingle.setImageLoader(new GridImagesLayout.Callback() {
             @Override
             public void loadImage(String url, ImageView imageView) {
                 Glide.with(MainActivity.this).load(url).into(imageView);
+            }
+
+            @Override
+            public ImageView createSingleImageView() {
+                RoundedImageView imageView = new RoundedImageView(MainActivity.this);
+                imageView.setCornerRadius(10);
+                return imageView;
+            }
+
+            @Override
+            public ImageView createGridImageView() {
+                SquareRoundedImageView imageView = new SquareRoundedImageView(MainActivity.this);
+                imageView.setCornerRadius(10);
+                return imageView;
             }
         });
 
@@ -34,15 +49,28 @@ public class MainActivity extends Activity {
         gridImagesLayoutSingle.setImages(images);
 
 
-
         GridImagesLayout gridImagesLayout = findViewById(R.id.gridimages_layout);
 //        gridImagesLayout.setColumnCount(3);
 //        gridImagesLayout.setDividerWidth(dp2px(this, 4));
 //        gridImagesLayout.setSingleImageMaxSize(dp2px(this, 200));
-        gridImagesLayout.setImageLoader(new GridImagesLayout.ImageLoader() {
+        gridImagesLayout.setImageLoader(new GridImagesLayout.Callback() {
             @Override
             public void loadImage(String url, ImageView imageView) {
                 Glide.with(MainActivity.this).load(url).into(imageView);
+            }
+
+            @Override
+            public ImageView createSingleImageView() {
+                RoundedImageView imageView = new RoundedImageView(MainActivity.this);
+                imageView.setCornerRadius(10);
+                return imageView;
+            }
+
+            @Override
+            public ImageView createGridImageView() {
+                SquareRoundedImageView imageView = new SquareRoundedImageView(MainActivity.this);
+                imageView.setCornerRadius(10);
+                return imageView;
             }
         });
 

@@ -19,7 +19,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 public class GridImagesLayout extends FrameLayout {
     private ImageView singleImageView;
     private GridLayout gridImageLayout;
-    private ImageLoader imageLoader;
+    private Callback callback;
     private int singleImageMaxSize = 300; //px
     private int columnCount = 2;
     private int dividerWidth = 10;  //px
@@ -43,15 +43,6 @@ public class GridImagesLayout extends FrameLayout {
     }
 
     private void init() {
-        singleImageView = new ImageView(getContext());
-        singleImageView.setAdjustViewBounds(true);
-        singleImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        singleImageView.setVisibility(GONE);
-        singleImageView.setMaxWidth(singleImageMaxSize);
-        singleImageView.setMaxHeight((int) (singleImageMaxSize * 1.5));
-        LayoutParams layoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        addView(singleImageView, layoutParams);
-
         gridImageLayout = new GridLayout(getContext());
         gridImageLayout.setColumnCount(columnCount);
         gridImageLayout.setVisibility(GONE);
@@ -59,8 +50,8 @@ public class GridImagesLayout extends FrameLayout {
         addView(gridImageLayout, gridLayoutParams);
     }
 
-    public void setImageLoader(ImageLoader imageLoader) {
-        this.imageLoader = imageLoader;
+    public void setImageLoader(Callback imageLoader) {
+        this.callback = imageLoader;
     }
 
     public void setColumnCount(int count) {
@@ -70,11 +61,6 @@ public class GridImagesLayout extends FrameLayout {
 
     public void setSingleImageMaxSize(int size) {
         this.singleImageMaxSize = size;
-        singleImageView.setMaxWidth(singleImageMaxSize);
-        singleImageView.setMaxHeight((int) (singleImageMaxSize * 1.5));
-        LayoutParams layoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-        removeView(singleImageView);
-        addView(singleImageView, layoutParams);
     }
 
     public void setDividerWidth(int dividerWidth) {
@@ -83,15 +69,31 @@ public class GridImagesLayout extends FrameLayout {
 
     public void setImages(List<String> images) {
         if (images.isEmpty()) {
-            singleImageView.setVisibility(GONE);
+            if (singleImageView != null) {
+                singleImageView.setVisibility(GONE);
+            }
             gridImageLayout.setVisibility(GONE);
         } else if (images.size() == 1) {
             ViewGroup.LayoutParams layoutParams = getLayoutParams();
             layoutParams.width = WRAP_CONTENT;
             layoutParams.height = WRAP_CONTENT;
             setLayoutParams(layoutParams);
-            if (imageLoader != null) {
-                imageLoader.loadImage(images.get(0), singleImageView);
+
+            if (callback != null) {
+                singleImageView = callback.createSingleImageView();
+            } else {
+                singleImageView = new ImageView(getContext());
+            }
+            singleImageView.setAdjustViewBounds(true);
+            singleImageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            singleImageView.setVisibility(GONE);
+            singleImageView.setMaxWidth(singleImageMaxSize);
+            singleImageView.setMaxHeight((int) (singleImageMaxSize * 1.5));
+            LayoutParams lp = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+            addView(singleImageView, lp);
+
+            if (callback != null) {
+                callback.loadImage(images.get(0), singleImageView);
             }
             singleImageView.setVisibility(VISIBLE);
             gridImageLayout.setVisibility(GONE);
@@ -100,18 +102,26 @@ public class GridImagesLayout extends FrameLayout {
             layoutParams.width = MATCH_PARENT;
             layoutParams.height = WRAP_CONTENT;
             setLayoutParams(layoutParams);
-            singleImageView.setVisibility(GONE);
+
+            if (singleImageView != null) {
+                singleImageView.setVisibility(GONE);
+            }
             gridImageLayout.setVisibility(VISIBLE);
             gridImageLayout.removeAllViews();
             for (int i = 0; i < images.size(); i++) {
-                SquareImageView imageView = new SquareImageView(getContext());
+                ImageView imageView;
+                if (callback != null) {
+                    imageView = callback.createGridImageView();
+                } else {
+                     imageView = new SquareImageView(getContext());
+                }
                 imageView.setAdjustViewBounds(true);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount, 1f);
                 GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1f);
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams(rowSpec, columnSpec);
-                lp.height = 0;
                 lp.width = 0;
+                lp.height = 0;
                 lp.bottomMargin = dividerWidth;
                 lp.rightMargin = dividerWidth;
                 if (i % columnCount == columnCount - 1) {
@@ -120,15 +130,19 @@ public class GridImagesLayout extends FrameLayout {
                 if (i / columnCount == (images.size() / columnCount)) {
                     lp.bottomMargin = 0;
                 }
-                if (imageLoader != null) {
-                    imageLoader.loadImage(images.get(i), imageView);
+                if (callback != null) {
+                    callback.loadImage(images.get(i), imageView);
                 }
                 gridImageLayout.addView(imageView, lp);
             }
         }
     }
 
-    public interface ImageLoader {
+    public interface Callback {
         void loadImage(String url, ImageView imageView);
+
+        ImageView createSingleImageView();
+
+        ImageView createGridImageView();
     }
 }
